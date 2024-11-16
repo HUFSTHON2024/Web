@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { addVideo } from '../redux/store';
 
 export function VideoRecorder() {
@@ -8,7 +9,7 @@ export function VideoRecorder() {
   const dispatch = useDispatch();
   let localRecordedChunks = [];
   const videos = useSelector(state => state.videos.files);
-
+  const navigate = useNavigate();
   useEffect(() => {
     let stream;
 
@@ -39,11 +40,12 @@ export function VideoRecorder() {
             const blob = new Blob(localRecordedChunks, { type: 'video/webm' });
             dispatch(addVideo({ blob }));
             localRecordedChunks = [];
-            //console.log('녹화 중지 및 Redux에 저장 완료:', blob.size, 'bytes');
+            console.log('녹화 중지 및 Redux에 저장 완료:', blob.size, 'bytes');
 
-            // Redux 상태 크기 확인
-            // console.log('Redux 상태 배열 크기:', videos.length);
-            // console.log('Redux 상태 업데이트 완료:', videos);
+            //Redux 상태 크기 확인
+            console.log('Redux 상태 배열 크기:', videos.length);
+            console.log('Redux 상태 업데이트 완료:', videos);
+            navigate('/interview-room');
           } else {
             console.error('녹화된 데이터가 없습니다.');
           }
