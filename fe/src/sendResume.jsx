@@ -69,7 +69,7 @@ export default function BasicDemoDropzone() {
       const data = await response.json();
       console.log('Upload successful:', data);
 
-      // navigate('/interview');
+      navigate('/interview-room');
     } catch (error) {
       console.error('Upload error:', error);
       alert(`업로드 중 오류가 발생했습니다: ${error.message}`);
