@@ -12,25 +12,25 @@ export function VideoRecorder() {
     // 카메라 스트림 가져오기
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
-      .then((s) => {
+      .then(s => {
         stream = s;
         videoRef.current.srcObject = stream;
 
         const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         setMediaRecorder(recorder);
 
-        recorder.ondataavailable = (event) => {
+        recorder.ondataavailable = event => {
           if (event.data.size > 0) {
-            setRecordedChunks((prev) => [...prev, event.data]);
+            setRecordedChunks(prev => [...prev, event.data]);
           }
         };
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('카메라 접근 실패:', error);
       });
 
     return () => {
-      stream && stream.getTracks().forEach((track) => track.stop());
+      stream && stream.getTracks().forEach(track => track.stop());
     };
   }, []);
 
@@ -45,16 +45,19 @@ export function VideoRecorder() {
 
   const handleUpload = async () => {
     const blob = new Blob(recordedChunks, { type: 'video/webm' });
-    console.log(blob);
     const formData = new FormData();
     formData.append('video', blob, 'recorded_video.webm');
 
     try {
-      const response = await axios.post('http://localhost:3001/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        'http://localhost:4000/video/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
       console.log('업로드 성공:', response.data);
     } catch (error) {
       console.error('업로드 실패:', error);
