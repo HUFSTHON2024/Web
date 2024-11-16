@@ -33,13 +33,20 @@ export default function BasicDemoDropzone() {
       const formData = new FormData();
 
       // 파일 추가
-      formData.append('resume', files[0].file); // 첫 번째 파일만 사용
+      formData.append('resume', files[0]); // 첫 번째 파일만 사용
 
       // 텍스트 추가
       formData.append('jobDescription', jobText);
 
+
+      console.log(files[0])
+      console.log(jobText)
+      for (let [key, value] of formData.entries()) {
+        console.log('FormData Entry:', key, value);
+      }
+
       const response = await fetch(
-        'http://localhost:3000/video/upload/interview',
+        'http://localhost:4000/video/upload/interview',
         {
           method: 'POST',
           body: formData,
