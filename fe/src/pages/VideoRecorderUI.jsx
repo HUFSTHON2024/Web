@@ -9,7 +9,7 @@ export const VideoRecorderUI = () => {
         <h2 className="label">서버 비디오</h2>
         <div className="videoWrapper">
           <video className="video" controls>
-            <source src="../../public/test.mp4" type="video/mp4" />
+            <source src="/test.mp4" type="video/mp4" />
             비디오를 지원하지 않는 브라우저입니다.
           </video>
         </div>
