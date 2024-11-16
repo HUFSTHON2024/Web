@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { addVideo } from '../redux/store';
 
 export function VideoRecorder() {
@@ -9,24 +8,6 @@ export function VideoRecorder() {
   const dispatch = useDispatch();
   let localRecordedChunks = [];
   const videos = useSelector(state => state.videos.files);
-  let { id } = useParams();
-
-  // useEffect(() => {
-  //   // 동영상을 가져오는 함수
-  //   const fetchVideo = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:4000/videos/${id}`);
-  //       setVideoURL(response.data.videoURL); // 서버에서 받은 비디오 URL 저장
-  //       setLoading(false);
-  //     } catch (err) {
-  //       console.error('동영상 로드 실패:', err);
-  //       setError('동영상을 로드하는 데 실패했습니다.');
-  //       setLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchVideo();
-  // }, [id]);
 
   useEffect(() => {
     let stream;
