@@ -8,11 +8,11 @@ export class MLService {
   async predict(features: number[]) {
     try {
       const response = await axios.post(`${this.mlServerUrl}/predict`, {
-        features
+        features,
       });
       return response.data;
     } catch (error) {
       throw new HttpException('ML 서버 에러', 500);
     }
   }
-} 
+}
