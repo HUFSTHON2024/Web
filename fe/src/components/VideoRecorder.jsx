@@ -1,33 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { addVideo } from '../redux/store';
 
-export function VideoRecorder() {
+export function VideoRecorder({ id }) {
   const videoRef = useRef(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const dispatch = useDispatch();
   let localRecordedChunks = [];
   const videos = useSelector(state => state.videos.files);
-  let { id } = useParams();
-
-  // useEffect(() => {
-  //   // 동영상을 가져오는 함수
-  //   const fetchVideo = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:4000/videos/${id}`);
-  //       setVideoURL(response.data.videoURL); // 서버에서 받은 비디오 URL 저장
-  //       setLoading(false);
-  //     } catch (err) {
-  //       console.error('동영상 로드 실패:', err);
-  //       setError('동영상을 로드하는 데 실패했습니다.');
-  //       setLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchVideo();
-  // }, [id]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     let stream;
 
@@ -56,13 +38,14 @@ export function VideoRecorder() {
         recorder.onstop = () => {
           if (localRecordedChunks.length > 0) {
             const blob = new Blob(localRecordedChunks, { type: 'video/webm' });
-            dispatch(addVideo({ blob }));
+            dispatch(addVideo({ blob, id }));
             localRecordedChunks = [];
-            //console.log('녹화 중지 및 Redux에 저장 완료:', blob.size, 'bytes');
+            console.log('녹화 중지 및 Redux에 저장 완료:', blob.size, 'bytes');
 
-            // Redux 상태 크기 확인
-            // console.log('Redux 상태 배열 크기:', videos.length);
-            // console.log('Redux 상태 업데이트 완료:', videos);
+            //Redux 상태 크기 확인
+            console.log('Redux 상태 배열 크기:', videos.length);
+            console.log('Redux 상태 업데이트 완료:', videos);
+            navigate('/interview-room');
           } else {
             console.error('녹화된 데이터가 없습니다.');
           }
