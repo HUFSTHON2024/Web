@@ -1,11 +1,11 @@
 import './App.css';
 import { Routes, Route, Link } from 'react-router-dom';
-import VideoRecorder from './VideoRecorder';
+import VideoRecorderUI from './pages/VideoRecorderUI';
 
 function App() {
   return (
     <Routes>
-      <Route path="" element={<VideoRecorder />} />
+      <Route path="/video/:id" element={<VideoRecorderUI />} />
     </Routes>
   );
 }

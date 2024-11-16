@@ -1,0 +1,112 @@
+.container {
+    display: flex;
+    flex-direction: row; /* 가로 방향 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    text-align: center;
+    padding: 40px;
+    gap: 40px;
+    width: 100%; /* 컨테이너 너비를 화면의 80%로 설정 */
+    max-width: 1400px; /* 최대 너비 설정 */
+    margin: auto; /* 양 옆에 동일한 빈 공간 */
+    height: 100vh; /* 화면 전체 높이 */
+    box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+}
+
+.videoBox {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 500px; /* 고정 높이 설정 */
+}
+
+.videoWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 비율 유지 */
+    border-radius: 10px;
+    background-color: #000;
+}
+
+.label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.buttonContainer {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    background-color: #888;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #555;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.styled-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.styled-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.styled-button:active {
+    background-color: #003f7f;
+    transform: scale(0.95);
+}
+
+.styled-button.upload {
+    background-color: #28a745;
+}
+
+.styled-button.upload:hover {
+    background-color: #218838;
+}
+
+.styled-button.upload:active {
+    background-color: #1e7e34;
+}
+
