@@ -15,11 +15,12 @@ const InterviewRoom = ({ username, onRefresh }) => {
     { id: 3, content: '세 번째 면접 질문입니다.', isAnswered: false },
   ]);
 
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/questions'); // 질문 데이터 요청
-        setQuestions(response.data); // 서버에서 받은 데이터를 상태에 저장
+        const response = await axios.get('http://localhost:4000/video/upload/interview'); // 질문 데이터 요청
+        setQuestions(response.data.questions); // 서버에서 받은 데이터를 상태에 저장
       } catch (err) {
         console.error('질문 데이터를 가져오는데 실패했습니다:', err);
       }

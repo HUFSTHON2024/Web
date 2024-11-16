@@ -21,6 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import fetch from 'node-fetch';
 import * as FormData from 'form-data';
 import * as multer from 'multer';
+import { readdir, unlink, writeFile } from 'fs/promises';
 
 interface MulterFile {
   fieldname: string;
@@ -119,6 +120,7 @@ export class VideoController {
     }
   }
 
+  
   @Post('upload/interview')
   @UseInterceptors(
     FileInterceptor('resume', {
@@ -176,11 +178,46 @@ export class VideoController {
         );
       }
 
-      const data = await response.json();
+      const videoPath = path.join(process.cwd(), 'src', 'asset');
+
+      const { quiz_title, video } = await response.json();
+      // 1. 기존 비디오 파일들 삭제
+      try {
+        const files = await readdir(videoPath);
+        await Promise.all(
+          files.map(file => unlink(path.join(videoPath, file)))
+        );
+      } catch (error) {
+        console.error('Error clearing asset folder:', error);
+      }
+
+      // 2. 새로운 비디오 파일들 저장
+      try {
+        await Promise.all(
+          video.map(async (videoData: Buffer, index: number) => {
+            const filename = `${index + 1}_interview.mp4`;
+            await writeFile(path.join(videoPath, filename), videoData);
+          })
+        );
+      } catch (error) {
+        console.error('Error saving video files:', error);
+        throw new BadRequestException('Failed to save video files');
+      }
+
+      // 3. 질문 목록 업데이트
+      const questions = quiz_title.map((title: string, index: number) => ({
+        id: index + 1,
+        content: title,
+        isAnswered: false
+      }));
+
       return {
         success: true,
         message: 'Interview request processed successfully',
-        data,
+        data: {
+          questions: questions,
+          videoCount: video.length
+        }
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
