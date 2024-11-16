@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addVideo } from '../redux/store';
 
-export function VideoRecorder() {
+export function VideoRecorder({ id }) {
   const videoRef = useRef(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ export function VideoRecorder() {
         recorder.onstop = () => {
           if (localRecordedChunks.length > 0) {
             const blob = new Blob(localRecordedChunks, { type: 'video/webm' });
-            dispatch(addVideo({ blob }));
+            dispatch(addVideo({ blob, id }));
             localRecordedChunks = [];
             console.log('녹화 중지 및 Redux에 저장 완료:', blob.size, 'bytes');
 

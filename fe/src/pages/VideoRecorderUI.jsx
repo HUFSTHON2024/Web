@@ -14,9 +14,12 @@ export const VideoRecorderUI = () => {
     // 동영상을 가져오는 함수
     const fetchVideo = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/videos/${id}`, {
-          responseType: 'blob',
-        });
+        const response = await axios.get(
+          `http://localhost:4000/video/interview/${id}`,
+          {
+            responseType: 'blob',
+          },
+        );
         const videoBlob = response.data;
         const videoObjectURL = URL.createObjectURL(videoBlob);
         setVideoURL(videoObjectURL);
@@ -56,7 +59,7 @@ export const VideoRecorderUI = () => {
 
       <div className="videoBox">
         <h2 className="label">내 캠</h2>
-        <VideoRecorder />
+        <VideoRecorder id={id} />
       </div>
     </div>
   );
