@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "@nestjs/mapped-types": "*"
+    "@nestjs/mapped-types": "*",
+    "@reduxjs/toolkit": "^2.3.0",
+    "react-redux": "^9.1.2"
   },
   "name": "hackathon-project",
   "private": true,
