@@ -8,7 +8,7 @@ function App() {
   return (
     <Routes>
       <Route path="/video/:id" element={<VideoRecorderUI />} />
-      <Route path="/send-resume" element={<FileUploadPage />} />
+      <Route path="/" element={<FileUploadPage />} />
       <Route path="/interview-room" element={<InterviewRoom />} />
     </Routes>
   );
