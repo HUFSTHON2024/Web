@@ -22,7 +22,6 @@ import fetch from 'node-fetch';
 import * as FormData from 'form-data';
 import * as multer from 'multer';
 
-
 interface MulterFile {
   fieldname: string;
   originalname: string;
@@ -63,7 +62,12 @@ export class VideoController {
   ) {
     try {
       // 동영상 파일 경로 설정 (실제 저장 경로에 맞게 수정 필요)
-      const videoPath = path.join(process.cwd(), 'uploads', `interview${id}.mp4`);
+      const videoPath = path.join(
+        process.cwd(),
+        'src',
+        'asset',
+        `${id}_interview.mp4`,
+      );
 
       // 파일 존재 여부 확인
       if (!fs.existsSync(videoPath)) {
