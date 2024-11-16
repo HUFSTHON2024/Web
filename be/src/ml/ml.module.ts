@@ -6,4 +6,4 @@ import { MLService } from './ml.service';
   controllers: [MLController],
   providers: [MLService],
 })
-export class MLModule {} 
+export class MLModule {}

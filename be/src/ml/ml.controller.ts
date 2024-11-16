@@ -9,4 +9,4 @@ export class MLController {
   async predict(@Body() body: { features: number[] }) {
     return this.mlService.predict(body.features);
   }
-} 
+}
