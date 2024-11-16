@@ -29,21 +29,21 @@ interface MulterFile {
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 
-  // @Post('upload')
-  // @UseInterceptors(FileInterceptor('video'))
-  // uploadVideo(@UploadedFile() file: MulterFile) {
-  //   console.log('파일 업로드 확인:');
-  //   console.log('원본 파일 이름:', file.originalname);
-  //   console.log('MIME 타입:', file.mimetype);
-  //   console.log('파일 크기 (바이트):', file.size);
+  @Post('upload/video')
+  @UseInterceptors(FileInterceptor('video'))
+  uploadVideo(@UploadedFile() file: MulterFile) {
+    console.log('파일 업로드 확인:');
+    console.log('원본 파일 이름:', file.originalname);
+    console.log('MIME 타입:', file.mimetype);
+    console.log('파일 크기 (바이트):', file.size);
 
-  //   return {
-  //     message: '파일 업로드 성공',
-  //     originalName: file.originalname,
-  //     mimeType: file.mimetype,
-  //     size: file.size,
-  //   };
-  // }
+    return {
+      message: '파일 업로드 성공',
+      originalName: file.originalname,
+      mimeType: file.mimetype,
+      size: file.size,
+    };
+  }
   // // 이력서:PDF 및 채용공고문:text AI서버로 전송
   // @Post('submit/info')
   // @UseInterceptors(
@@ -94,18 +94,26 @@ export class VideoController {
   //   const videoFeedback = await this.videoService.getVideoFeedback(videoUrl);
   //   return videoFeedback;
   // }
-
-  @Post('upload')
+  @Post('upload/interview')
   @UseInterceptors(
     FileInterceptor('resume', {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          // 저장 디렉터리 설정: `be/src/uploads/video`
-          const uploadPath = path.join(__dirname, '..', 'uploads', 'video');
+          // 저장 디렉터리 설정: `uploads/video`
+          const uploadPath = path.join(
+            __dirname,
+            '..',
+            '..',
+            'uploads',
+            'video',
+          );
+          if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+          }
           cb(null, uploadPath);
         },
         filename: (req, file, cb) => {
-          // 파일 이름 생성: 고유한 이름 설정
+          // 파일 이름 생성
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = path.extname(file.originalname); // 확장자 추출
@@ -118,15 +126,21 @@ export class VideoController {
     @UploadedFile() file: Express.Multer.File, // 파일 처리
     @Body('jobDescription') jobDescription: string, // 텍스트 처리
   ) {
-    console.log('업로드된 이력서 파일:', file.originalname);
+    console.log('업로드된 파일:', file.originalname);
     console.log('채용 공고 설명:', jobDescription);
 
     try {
-      // 파일 처리 로직
-      const filePath = path.resolve('./uploads', file.filename);
-      console.log(`저장된 파일 경로: ${filePath}`);
+      // 파일 저장 경로
+      const filePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'uploads',
+        'video',
+        file.filename,
+      );
 
-      // 여기에서 AI 분석 로직 추가
+      // 여기에서 AI 분석 로직 추가 가능
       return {
         message: '요청 처리 성공',
         file: file.originalname,
