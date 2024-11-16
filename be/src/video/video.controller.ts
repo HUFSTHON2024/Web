@@ -1,17 +1,16 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Post,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import * as fs from 'fs';
-import axios from 'axios';
+import fetch from 'node-fetch';
 import { VideoService } from './video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { InfoRequestDto } from './dto/requestDto/info.request.dto';
-import path from 'path';
-import { diskStorage } from 'multer';
+import * as FormData from 'form-data';
+import * as multer from 'multer';
 
 interface MulterFile {
   fieldname: string;
@@ -97,58 +96,71 @@ export class VideoController {
   @Post('upload/interview')
   @UseInterceptors(
     FileInterceptor('resume', {
-      storage: diskStorage({
-        destination: (req, file, cb) => {
-          // 저장 디렉터리 설정: `uploads/video`
-          const uploadPath = path.join(
-            __dirname,
-            '..',
-            '..',
-            'uploads',
-            'video',
+      storage: multer.memoryStorage(),
+      fileFilter: (req, file, cb) => {
+        console.log(`Received file: ${JSON.stringify(file)}`);
+
+        if (!file.mimetype.includes('pdf')) {
+          return cb(
+            new BadRequestException('Only PDF files are allowed'),
+            false,
           );
-          if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-          }
-          cb(null, uploadPath);
-        },
-        filename: (req, file, cb) => {
-          // 파일 이름 생성
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = path.extname(file.originalname); // 확장자 추출
-          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-        },
-      }),
+        }
+        cb(null, true);
+      },
     }),
   )
   async handleInterviewRequest(
-    @UploadedFile() file: Express.Multer.File, // 파일 처리
-    @Body('jobDescription') jobDescription: string, // 텍스트 처리
+    @UploadedFile() file: Express.Multer.File,
+    @Body('jobDescription') jobDescription: string,
   ) {
-    console.log('업로드된 파일:', file.originalname);
-    console.log('채용 공고 설명:', jobDescription);
+    console.log(`File: ${JSON.stringify(file)}`);
+    console.log(`Job Description: ${jobDescription}`);
+
+    // 파일 유효성 검사
+    if (!file) {
+      throw new BadRequestException('Resume file is required');
+    }
 
     try {
-      // 파일 저장 경로
-      const filePath = path.join(
-        __dirname,
-        '..',
-        '..',
-        'uploads',
-        'video',
-        file.filename,
-      );
+      // FormData 생성
+      const formData = new FormData();
 
-      // 여기에서 AI 분석 로직 추가 가능
+      // 파일 추가 시 상세 정보 포함
+      formData.append('resume', file.buffer, {
+        filename: file.originalname,
+        contentType: file.mimetype,
+      });
+
+      if (jobDescription) {
+        formData.append('jobDescription', jobDescription);
+      }
+
+      const response = await fetch('http://localhost:5000/api/interview', {
+        method: 'GET',
+        body: formData,
+        headers: {
+          ...formData.getHeaders(),
+        },
+      });
+
+      if (!response.ok) {
+        throw new BadRequestException(
+          `AI server error: ${response.statusText}`,
+        );
+      }
+
+      const data = await response.json();
       return {
-        message: '요청 처리 성공',
-        file: file.originalname,
-        jobDescription,
+        success: true,
+        message: 'Interview request processed successfully',
+        data,
       };
     } catch (error) {
-      console.error('요청 처리 중 오류 발생:', error);
-      throw error;
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to process interview request');
     }
   }
 }
